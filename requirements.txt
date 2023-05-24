@@ -5,3 +5,4 @@ django-widget-tweaks~=1.4.8
 # pillow~=2.2.1
 stripe~=3.5.0
 pillow~=9.5.0
+gunicorn~=20.0.4

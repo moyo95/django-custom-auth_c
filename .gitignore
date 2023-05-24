@@ -6,3 +6,10 @@ myvenv/
 
 # Ignore media files
 media/
+
+.vscode
+__pycahe__
+*.pyc
+.DS_Sore
+local_settings.py
+.env

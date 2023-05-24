@@ -19,13 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'n89ul8!pvu5m797dbyg5)50g3=3b+4kglfyns%k-lnl(l)e2n1'
+# # SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = 'n89ul8!pvu5m797dbyg5)50g3=3b+4kglfyns%k-lnl(l)e2n1'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -125,6 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
@@ -139,6 +140,31 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STRIPE_SECRET_KEY = 'sk_test_51N9lt0DbeuwCoATIN29zTt2jLlhF4l8MvJYvx3pARMTVcDTdhEcX1H80mug90OTVRO0sEta3mBtdxN4FonuBGbKN00AHmuiWIM'
+# SECURITY WARNING: keep the secret key used in production secret!
+
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+#ローカル様設定
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+else:
+    import environ
+    env = environ.Env()
+    env.read_env(os.path.join(BASE_DIR, 'env'))
+
+    SECRET_KEY = env('SECRET_KEY')
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+    STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+    # ALLOWED_HOSTS = []
+
+    # STATIC_ROOT = '/user/share/nignx/html/static'
+    # MEDIA_ROOT = '/user/share/nginx/html/media'
