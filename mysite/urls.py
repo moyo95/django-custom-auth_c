@@ -25,7 +25,13 @@ from app.views import ItemListView # ← ItemListViewを直接インポート
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+
+    path('python/', include([
+        path('admin/', admin.site.urls),
+        path('', include('app.urls')),
+        path('accounts/', include('allauth.urls')), # もしallauthを使っている場合
+    
 
     # パスワードリセット要求ページ
     path('accounts/password/reset/', 
@@ -83,9 +89,11 @@ urlpatterns = [
     
     # --- 決済キャンセルページ ---
     path('cancel/', TemplateView.as_view(template_name="payment/cancel.html"), name="payment_cancel"),
-
+    ]))
     
 ]
 
+# 開発環境でのみメディアファイルと静的ファイルを配信するための設定
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
