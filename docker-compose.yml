@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=my_db
+      - POSTGRES_USER=my_user
+      - POSTGRES_PASSWORD=Pass1234
+      - TZ=UTC # PostgreSQLコンテナのOSタイムゾーン
+    ports:
+      - "5432:5432"
+    # PostgreSQLサーバーのタイムゾーンとログのタイムゾーンをUTCに設定（TimeZoneのTを大文字に統一）
+    command: postgres -c TimeZone=UTC -c log_timezone=UTC
+
+  web:
+    build: .
+    #command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn mysite.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      # ★ここが重要です★ DATABASE_URLにtimezoneオプションを再度追加
+      # options=-c+TimeZone%3DUTC は URLエンコードされた形式です
+      - DATABASE_URL=postgres://my_user:Pass1234@db:5432/my_db?options=-c%20TimeZone%3DUTC
+      - TZ=UTC # DjangoアプリケーションコンテナのOSタイムゾーンをUTCに設定
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
