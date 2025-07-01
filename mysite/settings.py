@@ -8,8 +8,8 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'default-dev-key')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
-
+# ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = ['graha.site', 'www.graha.site', '127.0.0.1']
 print("=" * 50)
 print("DJANGO SETTINGS ARE LOADED")
 print(f"DEBUG setting is: {DEBUG}")
