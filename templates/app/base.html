@@ -72,7 +72,8 @@
     </div>
   </nav>
   
-{% if request.path == '/' %}
+{% url 'app:item_list' as item_list_url %}
+{% if request.path == item_list_url %}
   <div class="hiro d-flex">
       <img src="{% static 'images/main_vish.jpg' %}" alt="" />
   </div>
