@@ -145,9 +145,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True # これがTrueであることを再確認
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 # 本番環境で静的ファイルが配信されるURLのプレフィックス
-# STATIC_URL = '/python/static/'
+STATIC_URL = '/python/static/'
 
 # ★★★ 2. USE_X_FORWARDED_HOST を追加 ★★★
 # Nginxなどのリバースプロキシ経由で正しいホスト名やプロトコルを認識させる
