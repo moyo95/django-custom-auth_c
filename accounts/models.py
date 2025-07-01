@@ -30,9 +30,14 @@ class UserManager(UserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('メールアドレス', unique=True)
-    first_name = models.CharField('姓', max_length=30)
-    last_name = models.CharField('名', max_length=150)
-    address = models.CharField('住所', max_length=30, blank=True)
+    first_name = models.CharField('姓', max_length=30,blank=True)
+    last_name = models.CharField('名', max_length=150,blank=True)
+    first_name_kana = models.CharField('かな',max_length=30, blank=True)
+    last_name_kana = models.CharField('かな',max_length=30, blank=True)
+    # address = models.CharField('住所', max_length=30, blank=True)
+    postal_code = models.CharField('郵便番号',max_length=7, blank=True)
+    address1 = models.CharField('住所1',max_length=255, blank=True)
+    address2 = models.CharField('住所2',max_length=255, blank=True)
     tel = models.CharField('電話番号', max_length=30, blank=True)
     created = models.DateField('入会日', default=timezone.now)
     is_staff = models.BooleanField(
