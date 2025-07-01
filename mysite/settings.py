@@ -157,7 +157,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
+MEDIA_URL = '/python/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 if DEBUG:
