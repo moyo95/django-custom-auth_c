@@ -12,6 +12,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+     path('python/', include([
     # 1. 管理サイト (例: /admin/)
     path('admin/', admin.site.urls),
 
@@ -32,6 +33,7 @@ urlpatterns = [
     #    あなたの `path('', ItemListView.as_view())` の機能は、
     #    この `app.urls` の中で定義するのが正しい方法です。
     path('', include('app.urls')),
+    ]))
 ]
 
 # 開発環境 (DEBUG=True) のでのみ、メディアファイルと静的ファイルを配信するための設定です。
