@@ -1,0 +1,32 @@
+{% extends 'app/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="card card-auth my-5 mx-auto">
+    <div class="card-body w-100 p-4">
+        <!-- ▼▼▼ 修正点1: h5タグはここで閉じる ▼▼▼ -->
+        <h5 class="card-title text-center">ログイン</h5>
+
+        <!-- ▼▼▼ 修正点2: formタグとdivタグをh5の外に出す ▼▼▼ -->
+        <form method="post" class="form-auth">
+            {% csrf_token %}
+            <div class="form-label-group">
+                {% render_field form.login class='form-control' placeholder='メールアドレス' %}
+            </div>
+            <div class="form-label-group">
+                {% render_field form.password class='form-control' placeholder='パスワード' %}
+            </div>
+            <div class="button mx-auto">
+                <button class="btn btn-lg btn-primary btn-block mx-auto" type="submit" style="font-size: 1rem;">ログイン</button>
+            </div>
+        </form>
+
+        <div class="mt-4">
+            <h6 class="text-center"><a href="{% url 'account_reset_password' %}">パスワードをお忘れですか？</a></h6>
+            <h6 class="text-center"><a href="{% url 'account_signup' %}">登録がお済みではない方はコチラから</a></h6>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

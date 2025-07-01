@@ -4,17 +4,77 @@
     box-sizing: border-box;
 }
 
+
+.bg-dark {
+    background-color:#6b6c76!important ;
+}
+.page-item.active .page-link {
+    color: #fff;
+    background-color: #6b6c76;
+    border-color: #6b6c76;
+}
+.page-link {
+    color: #6b6c76;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+
+}
+.page-link:hover {
+     color: #6b6c76;
+}
+.page-link:focus{
+    box-shadow:none;
+}
+
+
+html {
+  overflow-y: scroll;
+}
+
+
 body {
-    background: #f1f1f1;
+    background: white;
     display: flex;
     flex-flow: column;
     min-height: 100vh;
+    font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,sans-serif;
 }
 
 main {
     flex: 1;
 }
 
+.hiro {
+    width: 100%;
+}
+.hiro img {
+    overflow: hidden;
+    width: 100%;
+}
+
+
+.cat_btn {
+    font-size: 70%;
+    border-radius: 5rem;
+    font-weight: bold;
+    padding: .5rem 1rem;
+    display: inline-flex;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px; 
+  background-color: white;
+  color: gray;
+  border: 1px solid gray;
+}
+.cat_btn:hover {
+    background-color: #6b6c76;
+    color:white;
+  border: 1px solid rgb(27, 27, 27);
+}
+
+.card {
+    align-items: start!important;
+    border: none !important;
+}
 .card-profile {
     width: 700px;
     border: 0;
@@ -22,14 +82,26 @@ main {
     box-shadow: 0 0.2rem 0 rgba(0,0,0,0.1);
 }
 
+.price {
+    font-size: 32px;
+    font-family: "Noto Sans JP", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:bold;
+}
+
 .button {
-    width: 150px;
+    /* width: 150px; */
 }
 
 .btn {
-    font-size: 80%;
+    font-size: 90%;
     border-radius: 5rem;
     font-weight: bold;
+}
+@media (max-width: 576px) {
+    .btn {
+        font-size: 80%; /* スマホなど画面狭いときは少し小さく */
+    }
 }
 
 .profile_table {
@@ -45,6 +117,11 @@ main {
     padding: 16px 24px;
     text-align: left;
     background: #F1F4FA;
+}
+
+.profile_table .header__sab {
+    font-size: .8rem;
+    display: inline-block;
 }
 
 .profile_table .data {
@@ -77,7 +154,8 @@ main {
 }
 
 .card-body {
-    padding: 2rem;
+    padding: .5rem;
+    margin: auto;
 }
 
 .form-auth {
@@ -94,12 +172,12 @@ main {
 }
 
 .itemlist img {
-    height: 150px;
+    /* height: 150px; */
     object-fit: contain;
 }
 
 .product img {
-    height: 350px;
+    /* height: 350px; */
     object-fit: contain;
 }
 
@@ -129,4 +207,62 @@ main {
 
 .StripeElement--webkit-autofill {
     background-color: #FEFDE5 !important;
+}
+
+input {
+    width: 100%;
+}
+
+
+/* 商品ボックスの周囲に線を */
+.itemlist {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent; /* 普段は透明 */
+  transition: border-color 0.3s ease;
+}
+
+/* 擬似要素で上下左右の線を作る */
+.itemlist::before,
+.itemlist::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid #6b6c76; /* 線の色 */
+  width: 0;
+  height: 0;
+  transition: all 0.5s ease;
+}
+
+/* 上の線 */
+.itemlist::before {
+  top: 0;
+  left: 0;
+  border-bottom: none;
+  border-right: none;
+  border-top-left-radius: 5px;
+}
+
+/* 下の線 */
+.itemlist::after {
+  bottom: 0;
+  right: 0;
+  border-top: none;
+  border-left: none;
+  border-bottom-right-radius: 5px;
+}
+
+/* ホバー時に線を伸ばす */
+.itemlist:hover::before {
+  width: 100%;
+  height: 100%;
+  border-bottom: 1px solid #6b6c76;
+  border-right: 1px solid #6b6c76;
+}
+
+.itemlist:hover::after {
+  width: 100%;
+  height: 100%;
+  border-top: 1px solid #6b6c76;
+  border-left: 1px solid #6b6c76;
 }

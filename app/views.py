@@ -8,6 +8,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import CustomUser
 import stripe
 from django.conf import settings
+from django.http import JsonResponse
+import traceback
+from django.views.generic import TemplateView
+stripe.api_key = settings.STRIPE_SECRET_KEY
+from django.views.generic import ListView
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import Item
+from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags.humanize import intcomma
+
 
 # from django.views.generic import TemplateView
 # from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +26,7 @@ from django.conf import settings
 
 # class IndexView(LoginRequiredMixin,TemplateView):
 #     template_name = 'app/index.html'
+
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -26,8 +38,9 @@ class IndexView(View):
 class ItemDetailView(View):
     def get(self, request, *args, **kwargs):
         item_data = Item.objects.get(slug=self.kwargs['slug'])
-        return render(request, 'app./product.html', {
-            'item_data': item_data
+        return render(request, 'app/product.html', {
+            # 'item_data': item_data
+            'object': item_data,
         })
     
 
@@ -52,7 +65,7 @@ def addItem(request, slug):
         order =Order.objects.create(user=request.user, ordered_date=timezone.now())
         order.items.add(order_item)
 
-    return redirect('order')
+    return redirect('app:order')
 
 class OrderView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
@@ -83,9 +96,9 @@ def removeItem(request, slug):
             )[0]
             order.items.remove(order_item)
             order_item.delete()
-            return redirect('order')
+            return redirect('app:order')
         
-    return redirect('product', slug=slug)
+    return redirect('app:product', slug=slug)
 
 @login_required
 def removeSingleItem(request, slug):
@@ -108,8 +121,8 @@ def removeSingleItem(request, slug):
             else:
                 order.items.remove(order_item)
                 order_item.delete()
-            return redirect('order')
-    return redirect('product', slug=slug)
+            return redirect('app:order')
+    return redirect('app:product', slug=slug)
 
 class PaymentView(LoginRequiredMixin, View):
      def get(self, request, *args, **kwargs):
@@ -117,7 +130,8 @@ class PaymentView(LoginRequiredMixin, View):
          user_data = CustomUser.objects.get(id=request.user.id)
          context = {
              'order': order,
-             'user_data': user_data
+             'user_data': user_data,
+             'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY  # ← 追加
          }
          return render(request, 'app/payment.html', context)
      
@@ -153,7 +167,108 @@ class PaymentView(LoginRequiredMixin, View):
          order.payment = payment
          order.save()
          return redirect('thanks')
-     
+
+class CreateCheckoutSessionView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=request.user, ordered=False)
+            order_items = order.items.all()
+            
+            line_items = []
+            for item in order_items:
+                line_items.append({
+                    'price_data': {
+                        'currency': 'jpy',
+                        'product_data': {
+                            'name': item.item.title,
+                        },
+                        'unit_amount': int(item.item.price),
+                    },
+                    'quantity': item.quantity,
+                })
+
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='payment',
+                success_url='http://localhost:8000/success/',
+                cancel_url='http://localhost:8000/cancel/',
+            )
+            return JsonResponse({'id': session.id})
+        
+        except Exception as e:
+            print(traceback.format_exc())
+            logger.error("Error creating Stripe Checkout Session: %s", e)
+            return JsonResponse({'error': str(e)}, status=500)
+
 class ThanksView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, 'app/thanks.html')
+
+class PaymentCancelView(TemplateView):
+    template_name = 'payment/cancel.html'
+
+class ItemListView(ListView):
+    model = Item
+    template_name = 'app/item_list.html'
+    context_object_name = 'item_data'  # ここでテンプレートに渡す変数名を指定
+    paginate_by = 8
+
+#     queryset = Item.objects.all().order_by('-created_at') # created_atはモデルの作成日時フィールド名
+
+#     def get_queryset(self):
+#         category = self.request.GET.get('category')
+#         if category:
+#             return Item.objects.filter(category=category)
+#         return Item.objects.all()
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         # カテゴリ一覧をItemから重複なしで抽出
+#         context['categories'] = Item.objects.values_list('category', flat=True).distinct()
+#         return context
+
+# def some_view(request):
+#     user_data = request.user  # または User.objects.get(...)
+#     return render(request, 'template.html', {'user_data': user_data})
+    def get_queryset(self):
+        # 'created_at' を 'id' に変更
+        queryset = super().get_queryset().order_by('-id')
+
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Item.objects.values_list('category', flat=True).distinct()
+        return context
+
+
+
+def signup_view(request):
+    # ... ユーザー登録とメール送信処理 ...
+    context = {
+        'status': 'signup_success' # 新規登録成功のステータス
+    }
+    return render(request, 'app/confirm-email.html', context)
+
+# 例2: 確認メール再送のビュー
+def resend_confirmation_email_view(request):
+    # ... メール再送処理 ...
+    context = {
+        'status': 'resend_success' # 再送成功のステータス
+    }
+    return render(request, 'app/confirm-email.html', context)
+
+# 例3: メール認証リンククリック時のビュー
+def activate_view(request, uidb64, token):
+    # ... ユーザー認証処理 ...
+    if user_is_already_active:
+        context = {
+            'status': 'already_verified' # 認証済みのステータス
+        }
+        return render(request, 'app/confirm-email.html', context)
+    # ... 認証成功・失敗の処理 ...

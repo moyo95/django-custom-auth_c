@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="card card-profile my-5 mx-auto">
-    <div class="card-body">
+    <div class="card-body w-100">
         <h5 class="card-title text-center">プロフィール</h5>
             <table class="profile_table mb-4">
                 <tbody>
@@ -12,12 +12,29 @@
                         <td class="data">{{user_data.first_name}} {{user_data.last_name}}</td>
                     </tr>
                     <tr>
-                        <th class="header">メールアドレス</th>
-                        <td class="data">{{user_data.email}}</td>
+                        <th class="header">名前（ふりがな）</th>
+                        <td class="data">{{ user_data.first_name_kana }} {{ user_data.last_name_kana }}</td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <th class="header">住所</th>
                         <td class="data">{{user_data.address}}</td>
+                    </tr> -->
+                    <tr>
+                        <th class="header">郵便番号</th>
+                        <td class="data">{{ user_data.postal_code }}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">住所1</th>
+                        <td class="data">{{ user_data.address1 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">住所2</th>
+                        <td class="data">{{ user_data.address2 }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th class="header">メールアドレス</th>
+                        <td class="data">{{user_data.email}}</td>
                     </tr>
                     <tr>
                         <th class="header">電話番号</th>
@@ -30,7 +47,7 @@
                 </tbody>
             </table>
             <div class="button mx-auto">
-                <a href="{% url 'profile_edit' %}" class="btn btn-lg btn-warning btn-block">編集する</a>
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-lg btn-warning btn-block">編集する</a>
             </div>
        
     </div>

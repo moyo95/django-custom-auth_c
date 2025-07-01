@@ -1,0 +1,31 @@
+{% extends 'app/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="card card-info my-5 mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+        {% if confirmation %}
+            <h5 class="card-title text-center mb-4">メールアドレスの確認</h5>
+            <p>
+                メールアドレス <strong>{{ confirmation.email_address.email }}</strong> が、ユーザー「{{ user.username }}」のものであることを確認してください。
+            </p>
+            <p>
+                よろしければ、下のボタンを押して登録を完了させてください。
+            </p>
+            <form method="post" action="{% url 'account_confirm_email' confirmation.key %}" class="d-grid mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">確認する</button>
+            </form>
+        {% else %}
+            {% url 'account_email' as email_url %}
+            <h5 class="card-title text-center mb-4">リンクエラー</h5>
+            <p class="text-center">
+                このメール確認リンクは無効、または有効期限が切れています。
+            </p>
+            <div class="text-center mt-4">
+                <a href="{{ email_url }}" class="btn btn-secondary">確認メールを再送信する</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

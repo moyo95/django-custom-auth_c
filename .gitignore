@@ -3,7 +3,7 @@
 
 # Ignore virtual environment
 myvenv/
-
+myvenv_old/
 # Ignore media files
 media/
 
@@ -13,3 +13,8 @@ __pycahe__
 .DS_Sore
 local_settings.py
 .env
+.log
+._*
+_settings.py
+_env_vps
+_db.sqlite3

@@ -1,0 +1,83 @@
+{% extends 'app/base.html' %}
+{% load humanize %}
+{% load custom_filters %} 
+
+{% block content %}
+
+
+<div class="my-5">
+    <h3>ショッピングカート</h3>
+</div>
+
+<div class="row order">
+    <div class="col-md-9 mb-5">
+        <div class="card">
+            <div class="card-body px-4 py-3 w-100">
+                {% for order_item in order.items.all %}
+                <div class="row d-flex justify-content-between">
+                    <div class="row col-md-9">
+                        <div class="col-md-3 text-start">
+                            <img src="{{ order_item.item.image.url }}" alt="{{ order_item.item.title}}">
+                        </div>
+                        <div class="col-md-9">
+                            <h5>{{ order_item.item.title }}</h5>
+                            <p class="mb-1">
+                                数量：
+                                {# ↓↓↓ 'app:' を追加 ↓↓↓ #}
+                                <a href="{% url 'app:removesingleitem' order_item.item.slug %}" style="text-decoration: none;">
+                                    <span class="badge badge-warning p-2">
+                                        <i class="fas fa-minus"></i>
+                                    </span>
+                                </a>
+                                {{ order_item.quantity }}
+                                {# ↓↓↓ 'app:' を追加 ↓↓↓ #}
+                                <a href="{% url 'app:additem' order_item.item.slug %}">
+                                    <span class="badge badge-warning p-2">
+                                        <i class="fas fa-plus"></i>
+                                    </span>
+                                </a>
+                            </p>
+                            {# ↓↓↓ 'app:' を追加 ↓↓↓ #}
+                            <a href="{% url 'app:removeitem' order_item.item.slug %}">
+                                <span class="badge badge-danger py-1 px-2">削除</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-right d-flex justify-content-end align-items-end">
+                        <p class="mb-0">
+                            価格：
+                            <span class="text-danger font-weight-bold">
+                                ¥{{ order_item.get_total_item_price|force_intcomma }}
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                {% if not forloop.last %}
+                <hr>
+                {% endif %}
+                
+                {% empty %}
+                <p class="mb-3">カートは空です</p>
+                <p><a href="{% url 'app:item_list' %}">お買い物を始める</a></p> {# ← ついでにこちらも修正 #}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center px-2 py-3 w-100">
+                {% if order.get_total %}
+                <p>小計：<span class="font-weight-bold" style="font-size: 26px;">¥{{ order.get_total|force_intcomma }}</span></p>
+                <div class="mb-3">
+                    {# ↓↓↓ 'app:' を追加 ↓↓↓ #}
+                    <a href="{% url 'app:payment' %}" class="btn btn-warning">レジに進む</a>
+                </div>
+                {% endif %}
+                {# '買い物を続ける' はトップページへのリンクなので 'app:item_list' にする #}
+                <a href="{% url 'app:item_list' %}" class="btn btn-primary">買い物を続ける</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

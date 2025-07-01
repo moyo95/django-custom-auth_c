@@ -1,0 +1,94 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load custom_filters %} 
+{% block content %}
+
+<!-- <div class="alert alert-danger">
+    <h3>デバッグ情報</h3>
+    <pre>{{ item_data|pprint }}</pre> 
+</div> -->
+<div class="container my-5 py-5">
+    
+    <h2 class="mb-4"><span class="ml-3" style="font-size: 1rem;">ご注意：デモサイトの為、購入することはできません</span></h2>
+    <div class="mb-4">
+    <div class="my-5">
+        <a href="{% url 'app:item_list' %}" class="cat_btn mb-2 {% if not request.GET.category %}btn-dark{% else %}btn-secondary{% endif %}">すべて</a>
+        {% for cat in categories %}
+            <a href="?category={{ cat }}" class="cat_btn {% if request.GET.category == cat %}btn-dark{% else %}btn-primary{% endif %}">
+            {{ cat }}
+            </a>
+        {% endfor %}
+    </div>
+    <div class="row">
+        {% for item in item_data %}
+        <div class="col-lg-3 col-md-6">
+            <div class="card img-thumbnail itemlist mb-3">
+                <img src="{{ item.image.url }}" alt="" class="card-img-top card-thum">
+                <div class="card-body text-left w-100">
+                    <p class="mb-0 text-secondary border rounded px-2 py-0 small text-center d-inline-flex">{{ item.category }}</p>
+                    <h5 class="fs-4 my-2" style="font-size: 16px;">{{ item.title }}</h5>
+                    <p class="fs-6 text-right mb-0">
+                        ¥{{ item.price|force_intcomma }}<span style="font-size: .8rem;">(税込)</span>
+                    </p>
+                    <a href="{% url 'app:product' item.slug %}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>商品が見つかりませんでした。</p>
+        {% endfor %}
+    </div>
+
+  <!-- {# ページの表示 #}
+   {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} ページ<br>
+   {# 前へ #}
+   {% if page_obj.has_previous %}
+   <a href="?page=1">&laquo; 先頭</a>
+   <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+  {% endif %}
+
+ {# 次へ #}
+ {% if page_obj.has_next %}
+ <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+   <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+   {% endif %} -->
+   {# ページの表示 #}
+<div class="d-flex justify-content-between my-3">
+   <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }} ページ</span>
+</div>
+
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {# 「前へ」と「先頭」ボタン #}
+    {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page=1">&laquo; 先頭</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">前へ</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo; 先頭</span></li>
+      <li class="page-item disabled"><span class="page-link">前へ</span></li>
+    {% endif %}
+
+    {# ページ番号のループ #}
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {# 「次へ」と「最後」ボタン #}
+    {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">次へ</a></li>
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a></li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">次へ</span></li>
+      <li class="page-item disabled"><span class="page-link">最後 &raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
+
+</div> 
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>決済がキャンセルされました</h2>
+    <p>お支払いは完了しませんでした。再度お試しください。</p>
+    <a href="{% url 'app:item_list' %}" class="btn btn-primary mt-3">商品一覧へ戻る</a>
+</div>
+{% endblock %}

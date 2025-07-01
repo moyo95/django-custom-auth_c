@@ -1,0 +1,50 @@
+{% extends 'app/base.html' %}
+{% load humanize %}
+{% load custom_filters %} 
+{% block content %}
+<div class="my-5 py-5">
+    <div class="row product">
+        <div class="col-md-6 mb-4 text-center">
+            {# item_data を object に修正 #}
+            <img src="{{ object.image.url }}" alt="{{ object.title }}" class="img-fluid">
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body px-2 py-1 w-100">
+                    <div class="p-4">
+                        <h3>{{ object.title }}</h3> {# ← title を表示するのが自然かと思います #}
+                        <div class="d-flex">
+                            <p class="text-muted small">{{ object.category }}</p> {# item_data を object に修正 #}
+                            <p class="ml-3 mb-1 text-muted small">商品ID: {{ object.item_number }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <p class="price"><span>¥{{ object.price|force_intcomma }}</span></p>
+                            <div class="d-block d-md-flex my-2 d-my-0 align-items-center">
+                                {# 試行錯誤のコメントをすべて削除し、正しい一行だけを残す #}
+                                <a href="{% url 'app:additem' object.slug %}" class="btn btn-primary">カートに入れる</a>
+                                <div class="text-end ml-3 mt-3 mt-md-0">
+                                    <button onclick="history.back()" class="btn btn-outline-secondary">
+                                        ← 戻る
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="font-weight-bold">商品説明</p>
+                        <p>{{ object.description|linebreaksbr }}</p>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body px-2 py-1">
+                    <div class="p-4">
+                        <p class="mb-3">お支払い方法</p>
+                        <p>クレジットカード : VISA / Mastercard</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

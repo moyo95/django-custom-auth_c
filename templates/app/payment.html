@@ -1,0 +1,108 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load custom_filters %} 
+
+{% block content %}
+
+<div class="my-5">
+    <h3>注文内容を確認する</h3>
+    <p>開発環境ですので、「購入する」をクリックすると、Stripeの決済画面が表示されますが、実際に決済することはできません。</p>
+</div>
+
+<form method="POST" id="payment-form">
+    <div class="row order">
+        <div class="col-md-9">
+            <div class="card px-4">
+                <div class="card-body px-2 py-3 w-100">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="font-weight-bold">お届け先住所</p>
+                            <p>お名前：{{user_data.first_name}} {{user_data.last_name}} 様</p>
+                            <p>郵便番号：{{ user_data.postal_code }}</p>
+                            <p>ご住所：{{ user_data.address1 }}{{ user_data.address2 }}</p>
+                            <p>電話番号：{{ user_data.tel }}</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h5>注文商品</h5>
+                    <table class="table" style="font-size: .8rem;">
+                        <thead>
+                            <tr>
+                                <th>商品名</th>
+                                <th>数量</th>
+                                <th>単価</th>
+                                <th>小計</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.item.title }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>¥{{ item.item.price|force_intcomma }}</td>
+                                <td>¥{{ item.get_subtotal|force_intcomma }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center px-2 py-3 w-100">
+                    <div class="mb-3">
+                        <!-- <button id="checkout-button" type="button" class="btn btn-primary">購入する</button> -->
+                        {% if user_data.postal_code and user_data.address1 and user_data.tel %}
+                            {# 全ての必須情報が入力されている場合 -> 通常のボタンを表示 #}
+                            <button id="checkout-button" type="button" class="btn btn-primary">購入する</button>
+                        {% else %}
+                            {# 必須情報が一つでも欠けている場合 -> ボタンを無効化し、メッセージを表示 #}
+                            <button type="button" class="btn btn-primary" disabled>購入する</button>
+                            <p class="mt-2" style="font-size: .8rem; color: red;">
+                                お届け先情報が未入力です。<br>
+                                <a href="{% url 'accounts:profile_edit' %}">プロフィール編集</a>から登録してください。
+                            </p>
+                        {% endif %}
+                    </div>
+                    <p class="font-weight-bold">注文内容</p>
+                    <p>商品の小計：¥{{ order.get_total|force_intcomma }}</p>
+                    <p>配送料：¥０</p>
+                    <hr>
+                    <p class="font-weight-bold text-danger">ご請求金額：¥{{ order.get_total|force_intcomma }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+
+  document.getElementById("checkout-button").addEventListener("click", () => {
+    fetch("/create-checkout-session/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}"
+      },
+    })
+    .then(response => response.json())
+    .then(session => {
+      return stripe.redirectToCheckout({ sessionId: session.id });
+    })
+    .catch(error => console.error("Error:", error));
+  });
+</script>
+
+{% endblock extra_js %}

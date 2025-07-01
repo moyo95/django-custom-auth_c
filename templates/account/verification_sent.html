@@ -1,0 +1,18 @@
+{% extends 'app/base.html' %}
+{% block content %}
+    <div class="card card-info my-5 mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">メールアドレスを確認してください</h5>
+            <p class="mt-4">
+                ご登録いただいたメールアドレス宛に、本人確認用のメールを送信しました。
+            </p>
+            <p class="lead">
+                メールに記載されたリンクをクリックして、ユーザー登録を完了させてください。
+            </p>
+            <hr class="my-4">
+            <p class="text-muted small">
+                数分待ってもメールが届かない場合は、迷惑メールフォルダをご確認いただくか、お手数ですが再度ご登録をお試しください。
+            </p>
+        </div>
+    </div>
+{% endblock %}
