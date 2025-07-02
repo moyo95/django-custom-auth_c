@@ -34,6 +34,8 @@ urlpatterns = [
     # Stripe Checkout Session作成のエンドポイント
     path('create-checkout-session/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
 
+    path('stripe-webhook/', views.stripe_webhook, name='stripe-webhook'),
+
     # path('cancel/', views.PaymentCancelView.as_view(), name='payment_cancel'),
     # path('cancel/', TemplateView.as_view(template_name="app/cancel.html"), name="payment_cancel"),
 ]

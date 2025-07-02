@@ -19,6 +19,7 @@ from .models import Item
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.urls import reverse
+from .models import Order
 
 
 # from django.views.generic import TemplateView
@@ -197,6 +198,7 @@ class CreateCheckoutSessionView(View):
                 mode='payment',
                 # success_url='http://localhost:8000/success/',
                 # cancel_url='http://localhost:8000/cancel/',
+                client_reference_id=order.id, 
                 success_url=f"{protocol}://{host}{reverse('app:thanks')}",
                 cancel_url=f"{protocol}://{host}{reverse('payment_cancel')}",
             )
@@ -278,3 +280,45 @@ def activate_view(request, uidb64, token):
         }
         return render(request, 'app/confirm-email.html', context)
     # ... 認証成功・失敗の処理 ...
+
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET # .envから読み込む
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except (ValueError, stripe.error.SignatureVerificationError) as e:
+        return HttpResponse(status=400)
+
+    # checkout.session.completed イベントを処理
+    if event['type'] == 'checkout.session.completed':
+        session = event['data']['object']
+        
+        # ★★★ ここが「商品を袋に入れる」処理 ★★★
+        try:
+            # sessionから、あなたのサイトの注文IDなどを取得する方法が必要です
+            # ここでは例として、client_reference_idを使います
+            order_id = session.client_reference_id
+            if order_id:
+                order = Order.objects.get(id=order_id)
+                order.ordered = True # 注文済みにする
+                order.save()
+                print(f"注文ID: {order.id} が支払い済みに更新されました。")
+            else:
+                print("Webhookでclient_reference_idが見つかりませんでした。")
+
+        except Order.DoesNotExist:
+            print(f"Webhookエラー: 注文ID {order_id} が見つかりません。")
+            return HttpResponse(status=404)
+        except Exception as e:
+            print(f"Webhook処理エラー: {e}")
+            return HttpResponse(status=500)
+
+    return HttpResponse(status=200)
