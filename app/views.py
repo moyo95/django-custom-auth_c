@@ -312,6 +312,9 @@ def stripe_webhook(request):
                 order.ordered = True # 注文済みにする
                 order.save()
                 print(f"注文ID: {order.id} が支払い済みに更新されました。")
+                # ★★★ ここが重要：新しい空のカートを作成する ★★★
+                new_order = Order.objects.create(user=order.user, ordered=False)
+                print(f"ユーザー {order.user} のために新しいカート {new_order.id} を作成しました。")
             else:
                 print("Webhookでclient_reference_idが見つかりませんでした。")
 
