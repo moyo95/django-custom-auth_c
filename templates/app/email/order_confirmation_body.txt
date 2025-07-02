@@ -1,0 +1,21 @@
+{{ user.username }}様
+
+この度は、「graha.site」をご利用いただき、誠にありがとうございます。
+以下のご注文を確かに承りました。
+
+----------------------------------------
+ご注文番号: {{ order.id }}
+ご注文日時: {{ order.ordered_date|date:"Y年m月d日 H:i" }}
+
+ご注文商品:
+{% for order_item in order.items.all %}
+・{{ order_item.item.title }} x {{ order_item.quantity }}  (¥{{ order_item.get_final_price|intcomma }})
+{% endfor %}
+
+合計金額: ¥{{ order.get_total|intcomma }}
+
+----------------------------------------
+
+商品の発送まで、今しばらくお待ちくださいませ。
+
+今後とも「graha.site」をよろしくお願い申し上げます。

@@ -312,6 +312,27 @@ def stripe_webhook(request):
                 order.ordered = True # 注文済みにする
                 order.save()
                 print(f"注文ID: {order.id} が支払い済みに更新されました。")
+
+                # ★★★ ここからがメール送信処理 ★★★
+                subject = render_to_string('app/email/order_confirmation_subject.txt', {
+                    'order': order,
+                }).strip()
+                
+                body = render_to_string('app/email/order_confirmation_body.txt', {
+                    'order': order,
+                    'user': order.user,
+                })
+
+                send_mail(
+                    subject,
+                    body,
+                    settings.DEFAULT_FROM_EMAIL, # 送信元 (.envで設定)
+                    [order.user.email],         # 送信先
+                    fail_silently=False,
+                )
+                print(f"注文ID: {order.id} の注文完了メールを送信しました。")
+                # ★★★ メール送信処理はここまで ★★★
+                
                 # ★★★ ここが重要：新しい空のカートを作成する ★★★
                 new_order = Order.objects.create(user=order.user, ordered=False)
                 print(f"ユーザー {order.user} のために新しいカート {new_order.id} を作成しました。")

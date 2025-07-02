@@ -65,16 +65,16 @@
     </div>
     <div class="col-md-3">
         <div class="card">
-            <div class="card-body text-center px-2 py-3 w-100">
+            <div class="card-body text-center px-2 py-3">
                 {% if order.get_total %}
                 <p>小計：<span class="font-weight-bold" style="font-size: 26px;">¥{{ order.get_total|force_intcomma }}</span></p>
-                <div class="mb-3">
+                <div class="mb-3 w-100">
                     {# ↓↓↓ 'app:' を追加 ↓↓↓ #}
-                    <a href="{% url 'app:payment' %}" class="btn btn-warning">レジに進む</a>
+                    <a href="{% url 'app:payment' %}" class="btn btn-warning w-100 w-md-auto">レジに進む</a>
                 </div>
                 {% endif %}
                 {# '買い物を続ける' はトップページへのリンクなので 'app:item_list' にする #}
-                <a href="{% url 'app:item_list' %}" class="btn btn-primary">買い物を続ける</a>
+                <a href="{% url 'app:item_list' %}" class="btn btn-primary w-100 w-md-auto">買い物を続ける</a>
             </div>
         </div>
     </div>
