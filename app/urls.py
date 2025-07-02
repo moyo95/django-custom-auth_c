@@ -32,8 +32,7 @@ urlpatterns = [
     path('thanks/', views.ThanksView.as_view(), name='thanks'),
     
     # Stripe Checkout Session作成のエンドポイント
-    # path('create-checkout-session/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
-    path('create-checkout-session/', views.CreateCheckoutSessionView.as_view(), name='checkout_session'),
+    path('create-checkout-session/', views.CreateCheckoutSessionView.as_view(), name='create-checkout-session'),
 
     # path('cancel/', views.PaymentCancelView.as_view(), name='payment_cancel'),
     # path('cancel/', TemplateView.as_view(template_name="app/cancel.html"), name="payment_cancel"),
