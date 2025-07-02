@@ -90,7 +90,8 @@
   const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
 
   document.getElementById("checkout-button").addEventListener("click", () => {
-    fetch("/create-checkout-session/", {
+    // fetch("/create-checkout-session/", {
+    fetch("{% url 'app:create-checkout-session' %}", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
