@@ -20,11 +20,14 @@ services:
     env_file:
       - .env
     #command: python manage.py runserver 0.0.0.0:8000
-    command: gunicorn mysite.wsgi:application --bind 0.0.0.0:8000
+    # command: gunicorn mysite.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn --forwarded-allow-ips="*" mysite.wsgi:application --bind 0.0.0.0:8000
     ports:
       - "8000:8000"
     volumes:
       - .:/app
+      - staticfiles:/app/staticfiles
+      - media:/app/media
     environment:
       - PYTHONUNBUFFERED=1
       # ★ここが重要です★ DATABASE_URLにtimezoneオプションを再度追加
@@ -36,3 +39,5 @@ services:
 
 volumes:
   postgres_data:
+  staticfiles:
+  media:
