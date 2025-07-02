@@ -85,7 +85,7 @@
 
 {% block extra_js %}
 
-<script src="https://js.stripe.com/v3/"></script>
+<!-- <script src="https://js.stripe.com/v3/"></script>
 <script>
   const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
 
@@ -95,6 +95,32 @@
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": "{{ csrf_token }}"
+      },
+    })
+    .then(response => response.json())
+    .then(session => {
+      return stripe.redirectToCheckout({ sessionId: session.id });
+    })
+    .catch(error => console.error("Error:", error));
+  });
+</script> -->
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+  const checkoutButton = document.getElementById("checkout-button");
+
+  // ★★★ ステップ1：決済ボタン自体に、正しいURLを埋め込む ★★★
+  // この `data-url` 属性に、Djangoが正しいURLを生成してくれます。
+  checkoutButton.dataset.url = "{% url 'app:checkout_session' %}";
+
+  checkoutButton.addEventListener("click", () => {
+    // ★★★ ステップ2：埋め込んだURLを、ここで読み出して使う ★★★
+    fetch(checkoutButton.dataset.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}" // この方法はシンプルで良いですね！
       },
     })
     .then(response => response.json())
