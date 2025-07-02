@@ -112,8 +112,8 @@
 
   // ★★★ ステップ1：決済ボタン自体に、正しいURLを埋め込む ★★★
   // この `data-url` 属性に、Djangoが正しいURLを生成してくれます。
-  checkoutButton.dataset.url = "{% url 'app:checkout_session' %}";
-
+//   checkoutButton.dataset.url = "{% url 'app:checkout_session' %}";
+  checkoutButton.dataset.url = "{% url 'app:create-checkout-session' %}";
   checkoutButton.addEventListener("click", () => {
     // ★★★ ステップ2：埋め込んだURLを、ここで読み出して使う ★★★
     fetch(checkoutButton.dataset.url, {
