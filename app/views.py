@@ -1,35 +1,33 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import View
-from .models import Item, OrderItem, Order, Payment
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.mixins import LoginRequiredMixin
-from accounts.models import CustomUser
-import stripe
-from django.conf import settings
-from django.http import JsonResponse
+# 1. Python標準ライブラリ
+import logging
 import traceback
-from django.views.generic import TemplateView
-stripe.api_key = settings.STRIPE_SECRET_KEY
-from django.views.generic import ListView
-from django.core.paginator import Paginator
-from django.shortcuts import render
-from .models import Item
-from django.contrib.auth.models import User
+
+# 2. Djangoのライブラリ
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.humanize.templatetags.humanize import intcomma
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.formats import date_format
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from .models import Order
+from django.views.generic import ListView, DetailView, TemplateView
 
+# 3. サードパーティのライブラリ
+import stripe
 
-# from django.views.generic import TemplateView
-# from django.contrib.auth.mixins import LoginRequiredMixin
+# 4. あなた自身のアプリのモデルやフォーム
+from accounts.models import CustomUser
+from .models import Item, OrderItem, Order, Payment
 
-
-# class IndexView(LoginRequiredMixin,TemplateView):
-#     template_name = 'app/index.html'
-
+# --- 設定と初期化 ---
+stripe.api_key = settings.STRIPE_SECRET_KEY
+logger = logging.getLogger(__name__)
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
@@ -332,7 +330,7 @@ def stripe_webhook(request):
                 )
                 print(f"注文ID: {order.id} の注文完了メールを送信しました。")
                 # ★★★ メール送信処理はここまで ★★★
-                
+
                 # ★★★ ここが重要：新しい空のカートを作成する ★★★
                 new_order = Order.objects.create(user=order.user, ordered=False)
                 print(f"ユーザー {order.user} のために新しいカート {new_order.id} を作成しました。")
