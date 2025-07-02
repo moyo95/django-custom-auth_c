@@ -3,6 +3,9 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import UserManager, PermissionsMixin
 from django.utils import timezone
 
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.utils.translation import gettext_lazy as _
+
 class UserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
@@ -29,6 +32,20 @@ class UserManager(UserManager):
     
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+
+     username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[UnicodeUsernameValidator()],
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+        null=True, # nullを許容することで、既存のデータとの互換性を保つ
+        blank=True
+    )
+    
     email = models.EmailField('メールアドレス', unique=True)
     first_name = models.CharField('姓', max_length=30,blank=True)
     last_name = models.CharField('名', max_length=150,blank=True)
