@@ -187,6 +187,9 @@ class CreateCheckoutSessionView(View):
                     'quantity': item.quantity,
                 })
 
+             protocol = 'https' if request.is_secure() else 'http'
+             host = request.get_host()
+
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=line_items,
@@ -194,7 +197,7 @@ class CreateCheckoutSessionView(View):
                 # success_url='http://localhost:8000/success/',
                 # cancel_url='http://localhost:8000/cancel/',
                 success_url=f"{protocol}://{host}{reverse('app:thanks')}",
-                cancel_url=f"{protocol}://{host}{reverse('app:payment_cancel')}",
+                cancel_url=f"{protocol}://{host}{reverse('payment_cancel')}",
             )
             return JsonResponse({'id': session.id})
         
