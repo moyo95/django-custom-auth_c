@@ -187,8 +187,8 @@ class CreateCheckoutSessionView(View):
                     'quantity': item.quantity,
                 })
 
-             protocol = 'https' if request.is_secure() else 'http'
-             host = request.get_host()
+            protocol = 'https' if request.is_secure() else 'http'
+            host = request.get_host()
 
             session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
