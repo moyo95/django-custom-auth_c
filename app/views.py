@@ -191,8 +191,10 @@ class CreateCheckoutSessionView(View):
                 payment_method_types=['card'],
                 line_items=line_items,
                 mode='payment',
-                success_url='http://localhost:8000/success/',
-                cancel_url='http://localhost:8000/cancel/',
+                # success_url='http://localhost:8000/success/',
+                # cancel_url='http://localhost:8000/cancel/',
+                success_url=f"{protocol}://{host}{reverse('app:thanks')}",
+                cancel_url=f"{protocol}://{host}{reverse('app:payment_cancel')}",
             )
             return JsonResponse({'id': session.id})
         
