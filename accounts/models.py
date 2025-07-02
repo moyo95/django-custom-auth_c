@@ -33,7 +33,7 @@ class UserManager(UserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
 
-     username = models.CharField(
+    username = models.CharField(
         _('username'),
         max_length=150,
         unique=True,
@@ -45,7 +45,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         null=True, # nullを許容することで、既存のデータとの互換性を保つ
         blank=True
     )
-    
+
     email = models.EmailField('メールアドレス', unique=True)
     first_name = models.CharField('姓', max_length=30,blank=True)
     last_name = models.CharField('名', max_length=150,blank=True)
