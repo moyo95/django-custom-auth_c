@@ -19,6 +19,7 @@ from .models import Item
 from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Order
 
 
