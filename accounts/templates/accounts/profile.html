@@ -1,121 +1,55 @@
 {% extends 'app/base.html' %}
-{% load static %} {# CSSファイルを読み込む場合に備えて #}
-
-{% block extra_head %}
-{# このページ専用のCSSをここに書きます。外部ファイルに移動してもOKです。 #}
-<style>
-    /* プロフィール全体のリストコンテナ */
-    .profile-list {
-        border-top: 1px solid #dee2e6; /* 上部の区切り線 */
-    }
-
-    /* 各プロフィール項目（名前、住所など） */
-    .profile-item {
-        display: flex; /* 横並びレイアウトの基本 */
-        padding: 1rem 0;
-        border-bottom: 1px solid #dee2e6; /* 下部の区切り線 */
-        align-items: center; /* 中央揃え（垂直方向） */
-    }
-
-    /* 項目のラベル（「名前」「住所」など） */
-    .profile-label {
-        font-weight: bold;
-        color: #6c757d; /* 少し薄い文字色 */
-        flex-shrink: 0; /* ラベルが縮まないようにする */
-        width: 140px; /* ラベルの幅を固定して揃える */
-    }
-
-    /* 実際のデータ部分 */
-    .profile-value {
-        flex-grow: 1; /* 残りの幅をすべて使う */
-        word-break: break-all; /* 長いURLなどがはみ出ないように改行する */
-    }
-    
-    /* --- レスポンシブ対応 (画面幅が768px以下の場合) --- */
-    @media (max-width: 768px) {
-        .card-profile {
-            /* スマホでは左右の余白をなくす */
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            border: none;
-            box-shadow: none;
-        }
-
-        .profile-item {
-            /* 縦積みのレイアウトに変更 */
-            flex-direction: column;
-            align-items: flex-start; /* 左揃えに変更 */
-            padding: 0.75rem 0.5rem;
-        }
-
-        .profile-label {
-            width: auto; /* 幅の固定を解除 */
-            margin-bottom: 0.25rem; /* データとの間に少し余白を設ける */
-            font-size: 0.8rem; /* ラベルを少し小さくする */
-        }
-        
-        .profile-value {
-            font-size: 1rem; /* データの文字サイズ */
-        }
-    }
-</style>
-{% endblock %}
-
 
 {% block content %}
 
-<div class="card card-profile my-lg-5 mx-auto"> {# 広い画面でのみ上下マージン my-lg-5 #}
+<div class="card card-profile my-5 mx-auto">
     <div class="card-body w-100">
         <h5 class="card-title text-center">プロフィール</h5>
-
-        {# --- ここからテーブルの代わりにdivで構造化 --- #}
-        <div class="profile-list my-4">
-            <div class="profile-item">
-                <div class="profile-label">名前</div>
-                <div class="profile-value">{{ user_data.last_name }} {{ user_data.first_name }}</div>
+            <table class="profile_table mb-4">
+                <tbody>
+                    <tr>
+                        <th class="header">名前</th>
+                        <td class="data">{{user_data.last_name}} {{user_data.first_name}} </td>
+                    </tr>
+                    <tr>
+                        <th class="header">名前（ふりがな）</th>
+                        <td class="data">{{ user_data.first_name_kana }} {{ user_data.last_name_kana }}</td>
+                    </tr>
+                    <!-- <tr>
+                        <th class="header">住所</th>
+                        <td class="data">{{user_data.address}}</td>
+                    </tr> -->
+                    <tr>
+                        <th class="header">郵便番号</th>
+                        <td class="data">{{ user_data.postal_code }}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">住所1</th>
+                        <td class="data">{{ user_data.address1 }}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">住所2</th>
+                        <td class="data">{{ user_data.address2 }}</td>
+                    </tr>
+                    
+                    <tr>
+                        <th class="header">メールアドレス</th>
+                        <td class="data">{{user_data.email}}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">電話番号</th>
+                        <td class="data">{{user_data.tel}}</td>
+                    </tr>
+                    <tr>
+                        <th class="header">入会日</th>
+                        <td class="data">{{user_data.created}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button mx-auto">
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-lg btn-warning btn-block">編集する</a>
             </div>
-
-            <div class="profile-item">
-                <div class="profile-label">ふりがな</div>
-                {# 元のコードでふりがなが逆になっていたので修正しました #}
-                <div class="profile-value">{{ user_data.last_name_kana }} {{ user_data.first_name_kana }}</div>
-            </div>
-
-            <div class="profile-item">
-                <div class="profile-label">郵便番号</div>
-                <div class="profile-value">{{ user_data.postal_code|default:"未設定" }}</div>
-            </div>
-
-            <div class="profile-item">
-                <div class="profile-label">住所1</div>
-                <div class="profile-value">{{ user_data.address1|default:"未設定" }}</div>
-            </div>
-            
-            <div class="profile-item">
-                <div class="profile-label">住所2</div>
-                <div class="profile-value">{{ user_data.address2|default:"未設定" }}</div>
-            </div>
-
-            <div class="profile-item">
-                <div class="profile-label">メールアドレス</div>
-                <div class="profile-value">{{ user_data.email }}</div>
-            </div>
-
-            <div class="profile-item">
-                <div class="profile-label">電話番号</div>
-                <div class="profile-value">{{ user_data.tel|default:"未設定" }}</div>
-            </div>
-
-            <div class="profile-item">
-                <div class="profile-label">入会日</div>
-                <div class="profile-value">{{ user_data.created }}</div>
-            </div>
-        </div>
-        {# --- ここまで --- #}
-
-        <div class="button mx-auto">
-            <a href="{% url 'accounts:profile_edit' %}" class="btn btn-lg btn-warning btn-block">編集する</a>
-        </div>
+       
     </div>
 </div>
 
