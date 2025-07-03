@@ -10,7 +10,7 @@
 
 ご注文商品:
 {% for order_item in order.items.all %}
-・{{ order_item.item.title }} x {{ order_item.quantity }}  (¥{{ order_item.get_final_price|intcomma }})
+・{{ order_item.item.title }} x {{ order_item.quantity }}  (¥{{ order_item.get_subtotal|intcomma }})  
 {% endfor %}
 
 合計金額: ¥{{ order.get_total|intcomma }}

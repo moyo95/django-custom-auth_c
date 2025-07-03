@@ -17,6 +17,7 @@ from django.utils.formats import date_format
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView
+from django.core.mail import send_mail
 
 # 3. サードパーティのライブラリ
 import stripe
