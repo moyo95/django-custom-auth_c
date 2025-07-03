@@ -1,5 +1,5 @@
 {% load humanize %} 
-{% if order.user and order.user.last_name %}
+{% if order.user and order.user.full_name.strip %}
     {{ order.user.full_name }}様
 {% elif order.user and order.user.email %}
     {{ order.user.email }}様
