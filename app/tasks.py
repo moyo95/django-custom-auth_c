@@ -10,6 +10,9 @@ def send_order_confirmation_email_task(order_id):
     """注文完了メールを非同期で送信するタスク"""
     try:
         order = Order.objects.get(id=order_id)
+
+        order.user.refresh_from_db()
+
         subject = render_to_string('app/email/order_confirmation_subject.txt', {'order': order}).strip()
         # ▼▼▼ ここを修正 ▼▼▼
         context = {
