@@ -33,7 +33,7 @@
                                 {% else %}
                                     {# --- ログインしていない場合のボタン --- #}
                                     {# ログインページへリダイレクトさせる。ログイン後の戻り先として、今の商品詳細ページのURLを渡す #}
-                                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary">カートに入れるにはログイン</a>
+                                    <a href="{% url 'url 'account_login' %}?next={{ request.path }}" class="btn btn-primary">カートに入れるにはログイン</a>
                                 {% endif %}
                                 <div class="text-end ml-3 mt-3 mt-md-0">
                                     <button onclick="history.back()" class="btn btn-outline-secondary">
