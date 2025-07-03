@@ -1,55 +1,56 @@
 # app/tasks.py
 from celery import shared_task
-from django.core.mail import send_mail, mail_admins
-from django.template.loader import render_to_string
+from django.core.mail import get_connection, EmailMessage # インポートを変更
 from django.conf import settings
-from .models import Order
+from .models import Order # Orderのインポートは忘れずに
 
 @shared_task
 def send_order_confirmation_email_task(order_id):
-    """注文完了メールを非同期で送信するタスク"""
     try:
         order = Order.objects.get(id=order_id)
-
         order.user.refresh_from_db()
 
-        subject = render_to_string('app/email/order_confirmation_subject.txt', {'order': order}).strip()
-        # ▼▼▼ ここを修正 ▼▼▼
-        context = {
-            'order': order,
-            'user': order.user  # 'user' をコンテキストに追加
-        }
-        body = render_to_string('app/email/order_confirmation_body.txt', context)
-        # ▲▲▲ 修正ここまで ▲▲▲
-        
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,
-            [order.user.email],
-            fail_silently=False,
-        )
+        # --- 手動で接続を確立して送信 ---
+        # settings.pyから接続設定を取得
+        with get_connection(
+            host=settings.EMAIL_HOST,
+            port=settings.EMAIL_PORT,
+            username=settings.EMAIL_HOST_USER,
+            password=settings.EMAIL_HOST_PASSWORD,
+            use_tls=settings.EMAIL_USE_TLS
+        ) as connection:
+            
+            # ユーザー向けメール
+            user_subject = "【テスト】ユーザー向けメール"
+            user_body = "これはユーザー向けのテストです。"
+            user_email = EmailMessage(
+                user_subject,
+                user_body,
+                settings.DEFAULT_FROM_EMAIL,
+                [order.user.email],
+                connection=connection # この接続を使う
+            )
+            user_email.send()
+            print("ユーザー向けメールを送信しようとしました。")
+            
+            # 管理者向けメール
+            admin_subject = "【テスト】管理者向けメール"
+            admin_body = "これは管理者向けのテストです。"
+            # mail_adminsの代わりに、ADMINSに直接送信
+            admin_recipients = [admin[1] for admin in settings.ADMINS]
+            if admin_recipients:
+                admin_email = EmailMessage(
+                    admin_subject,
+                    admin_body,
+                    settings.DEFAULT_FROM_EMAIL,
+                    admin_recipients,
+                    connection=connection # この接続を使う
+                )
+                admin_email.send()
+                print("管理者向けメールを送信しようとしました。")
 
-        print(f"ユーザー向けメールを送信しました (Order ID: {order_id})")
+        return f"Manually sent emails for order {order_id}"
 
-        # --- 2. 管理者向け通知メールの送信（追加する処理） ---
-        admin_subject = f"【新規注文】注文がありました (注文番号: {order.id})"
-        # 管理者向けに、より詳細なテンプレートを用意すると親切
-        admin_body = render_to_string('app/email/admin_notification_body.txt', {'order': order})
-
-        # settings.py の ADMINS に設定されたメールアドレスに一斉送信する
-        mail_admins(
-            admin_subject,
-            admin_body,
-            fail_silently=False,
-        )
-        print(f"管理者向け通知メールを送信しました (Order ID: {order_id})")
-        
-
-        return f"Successfully sent email for order {order_id}"
-
-    except Order.DoesNotExist:
-        return f"Error: Order with id={order_id} not found."
     except Exception as e:
-        # Celeryのリトライ機能に任せるため、例外を再発生させる
+        print(f"タスク内でエラー発生: {e}")
         raise e
