@@ -1,25 +1,28 @@
-【デバッグ情報】
+{% load humanize %} 
+{% if order.user and order.user.last_name %}
+    {{ order.user.full_name }}様
+{% elif order.user and order.user.email %}
+    {{ order.user.email }}様
+{% else %}
+    ご購入者様
+{% endif %}
 
---- order.user オブジェクト ---
-{{ order.user }}
+この度は、「graha.site」をご利用いただき、誠にありがとうございます。
+以下のご注文を確かに承りました。
 
---- order.user の全属性 (dir) ---
-{{ order.user|dir }}
+----------------------------------------
+ご注文番号: {{ order.id }}
+ご注文日時: {{ order.ordered_date|date:"Y年m月d日 H:i" }}
 
---- order.user の辞書 (vars) ---
-{{ order.user|vars }}
+ご注文商品:
+{% for order_item in order.items.all %}
+・{{ order_item.item.title }} x {{ order_item.quantity }}  (¥{{ order_item.get_subtotal|intcomma }})  
+{% endfor %}
 
---- 直接アクセス ---
-姓 (last_name): '{{ order.user.last_name }}'
-名 (first_name): '{{ order.user.first_name }}'
-
---- プロパティ呼び出し ---
-full_name プロパティ: '{{ order.user.full_name }}'
-
---- 手動結合 ---
-手動結合（姓 名）: '{{ order.user.last_name }} {{ order.user.first_name }}'
-手動結合（名 姓）: '{{ order.user.first_name }} {{ order.user.last_name }}'
+合計金額: ¥{{ order.get_total|intcomma }}
 
 ----------------------------------------
 
-（元のメール本文は一旦コメントアウトするか、この下に残しておく）
+商品の発送まで、今しばらくお待ちくださいませ。
+
+今後とも「graha.site」をよろしくお願い申し上げます。
