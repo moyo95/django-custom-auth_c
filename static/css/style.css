@@ -17,15 +17,15 @@ main {
 }
 
 .card-profile {
-    width: auto;
+    width: 700px;
     border: 0;
     border-radius: 1rem;
     box-shadow: 0 0.2rem 0 rgba(0,0,0,0.1);
 }
 
-@media (min-width: 992px) {
+@media (max-width: 576px) {
    .card-profile {
-    width: 700px;
+    width: auto;
 }
  }
 
