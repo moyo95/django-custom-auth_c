@@ -1,5 +1,9 @@
 {% load humanize %} 
-{{ user.username }}様
+{% if order.user %}
+{{ order.user.username }}様
+{% else %}
+ご購入者様
+{% endif %}
 
 この度は、「graha.site」をご利用いただき、誠にありがとうございます。
 以下のご注文を確かに承りました。

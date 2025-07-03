@@ -11,7 +11,13 @@ def send_order_confirmation_email_task(order_id):
     try:
         order = Order.objects.get(id=order_id)
         subject = render_to_string('app/email/order_confirmation_subject.txt', {'order': order}).strip()
-        body = render_to_string('app/email/order_confirmation_body.txt', {'order': order, 'user': order.user})
+        # ▼▼▼ ここを修正 ▼▼▼
+        context = {
+            'order': order,
+            'user': order.user  # 'user' をコンテキストに追加
+        }
+        body = render_to_string('app/email/order_confirmation_body.txt', context)
+        # ▲▲▲ 修正ここまで ▲▲▲
         
         send_mail(
             subject,
