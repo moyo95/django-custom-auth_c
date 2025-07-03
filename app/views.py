@@ -18,6 +18,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, TemplateView
 from django.core.mail import send_mail
+from .tasks import send_order_confirmation_email_task
 
 # 3. サードパーティのライブラリ
 import stripe
@@ -282,12 +283,11 @@ def activate_view(request, uidb64, token):
     # ... 認証成功・失敗の処理 ...
 
 
-
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
-    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET # .envから読み込む
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
     event = None
 
     try:
@@ -301,48 +301,107 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         
-        # ★★★ ここが「商品を袋に入れる」処理 ★★★
         try:
-            # sessionから、あなたのサイトの注文IDなどを取得する方法が必要です
-            # ここでは例として、client_reference_idを使います
-            order_id = session.client_reference_id
+            order_id = session.get('client_reference_id') # .get()を使うと安全
             if order_id:
-                order = Order.objects.get(id=order_id)
-                order.ordered = True # 注文済みにする
+                # 支払い済みになっていない注文のみを処理する
+                order = Order.objects.get(id=order_id, ordered=False)
+                
+                # 1. 注文ステータスを更新する
+                order.ordered = True
                 order.save()
                 print(f"注文ID: {order.id} が支払い済みに更新されました。")
 
-                # ★★★ ここからがメール送信処理 ★★★
-                subject = render_to_string('app/email/order_confirmation_subject.txt', {
-                    'order': order,
-                }).strip()
+                # 2. ★★★ メール送信を非同期タスクに依頼する ★★★
+                # データベースに保存されたオブジェクトのIDを渡すのが基本
+                send_order_confirmation_email_task.delay(order.id)
+                print(f"注文ID: {order.id} のメール送信タスクをキューに追加しました。")
                 
-                body = render_to_string('app/email/order_confirmation_body.txt', {
-                    'order': order,
-                    'user': order.user,
-                })
-
-                send_mail(
-                    subject,
-                    body,
-                    settings.DEFAULT_FROM_EMAIL, # 送信元 (.envで設定)
-                    [order.user.email],         # 送信先
-                    fail_silently=False,
-                )
-                print(f"注文ID: {order.id} の注文完了メールを送信しました。")
-                # ★★★ メール送信処理はここまで ★★★
-
-                # ★★★ ここが重要：新しい空のカートを作成する ★★★
-                new_order = Order.objects.create(user=order.user, ordered=False)
-                print(f"ユーザー {order.user} のために新しいカート {new_order.id} を作成しました。")
+                # 3. 新しい空のカートを作成する
+                Order.objects.create(user=order.user, ordered=False)
+                print(f"ユーザー {order.user} のために新しいカートを作成しました。")
+            
             else:
                 print("Webhookでclient_reference_idが見つかりませんでした。")
 
         except Order.DoesNotExist:
-            print(f"Webhookエラー: 注文ID {order_id} が見つかりません。")
-            return HttpResponse(status=404)
+            # 既に処理済みのWebhookが再送された場合などもここに来る
+            print(f"Webhookエラー: 処理対象の注文ID {order_id} が見つからないか、既に処理済みです。")
+            # 処理対象がないだけなので、Stripeには正常終了(200)を返すのが一般的
+            return HttpResponse(status=200) 
+        
         except Exception as e:
-            print(f"Webhook処理エラー: {e}")
+            # 予期せぬエラーが発生した場合
+            print(f"Webhook処理中に予期せぬエラーが発生しました: {e}")
+            # エラーがあったことをStripeに伝えるために500を返す
             return HttpResponse(status=500)
 
+    # イベントが正常に受信されたことをStripeに伝える
     return HttpResponse(status=200)
+
+
+    
+
+# @csrf_exempt 元
+# def stripe_webhook(request):
+#     payload = request.body
+#     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+#     endpoint_secret = settings.STRIPE_WEBHOOK_SECRET # .envから読み込む
+#     event = None
+
+#     try:
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, endpoint_secret
+#         )
+#     except (ValueError, stripe.error.SignatureVerificationError) as e:
+#         return HttpResponse(status=400)
+
+#     # checkout.session.completed イベントを処理
+#     if event['type'] == 'checkout.session.completed':
+#         session = event['data']['object']
+        
+#         # ★★★ ここが「商品を袋に入れる」処理 ★★★
+#         try:
+#             # sessionから、あなたのサイトの注文IDなどを取得する方法が必要です
+#             # ここでは例として、client_reference_idを使います
+#             order_id = session.client_reference_id
+#             if order_id:
+#                 order = Order.objects.get(id=order_id)
+#                 order.ordered = True # 注文済みにする
+#                 order.save()
+#                 print(f"注文ID: {order.id} が支払い済みに更新されました。")
+
+#                 # ★★★ ここからがメール送信処理 ★★★
+#                 subject = render_to_string('app/email/order_confirmation_subject.txt', {
+#                     'order': order,
+#                 }).strip()
+                
+#                 body = render_to_string('app/email/order_confirmation_body.txt', {
+#                     'order': order,
+#                     'user': order.user,
+#                 })
+
+#                 send_mail(
+#                     subject,
+#                     body,
+#                     settings.DEFAULT_FROM_EMAIL, # 送信元 (.envで設定)
+#                     [order.user.email],         # 送信先
+#                     fail_silently=False,
+#                 )
+#                 print(f"注文ID: {order.id} の注文完了メールを送信しました。")
+#                 # ★★★ メール送信処理はここまで ★★★
+
+#                 # ★★★ ここが重要：新しい空のカートを作成する ★★★
+#                 new_order = Order.objects.create(user=order.user, ordered=False)
+#                 print(f"ユーザー {order.user} のために新しいカート {new_order.id} を作成しました。")
+#             else:
+#                 print("Webhookでclient_reference_idが見つかりませんでした。")
+
+#         except Order.DoesNotExist:
+#             print(f"Webhookエラー: 注文ID {order_id} が見つかりません。")
+#             return HttpResponse(status=404)
+#         except Exception as e:
+#             print(f"Webhook処理エラー: {e}")
+#             return HttpResponse(status=500)
+
+#     return HttpResponse(status=200)

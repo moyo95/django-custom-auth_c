@@ -18,3 +18,4 @@ local_settings.py
 _settings.py
 _env_vps
 _db.sqlite3
+_docker-compose.yml
