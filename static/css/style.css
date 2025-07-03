@@ -17,15 +17,17 @@ main {
 }
 
 .card-profile {
-    width: 700px;
+    width: auto;
     border: 0;
     border-radius: 1rem;
     box-shadow: 0 0.2rem 0 rgba(0,0,0,0.1);
 }
 
-.button {
-    /* width: 150px; */
+@media (min-width: 992px) {
+   .card-profile {
+    width: 700px;
 }
+ }
 
 .btn {
     font-size: 90%;
