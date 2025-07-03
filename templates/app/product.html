@@ -21,13 +21,26 @@
                         <div class="d-flex justify-content-between">
                             <p class="price"><span>¥{{ object.price|force_intcomma }}</span></p>
                             <div class="d-block d-md-flex my-2 d-my-0 align-items-center">
-                                {# 試行錯誤のコメントをすべて削除し、正しい一行だけを残す #}
+
+                                <!-- {# 試行錯誤のコメントをすべて削除し、正しい一行だけを残す #}
                                 <a href="{% url 'app:additem' object.slug %}" class="btn btn-primary">カートに入れる</a>
+                                 -->
+                                
+                                {% if user.is_authenticated %}
+                                    {# --- ログインしている場合のボタン --- #}
+                                    {# カート追加処理を行うURLへ直接リンク #}
+                                    <a href="{% url 'app:additem' object.slug %}" class="btn btn-primary">カートに入れる</a>
+                                {% else %}
+                                    {# --- ログインしていない場合のボタン --- #}
+                                    {# ログインページへリダイレクトさせる。ログイン後の戻り先として、今の商品詳細ページのURLを渡す #}
+                                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary">カートに入れるにはログイン</a>
+                                {% endif %}
                                 <div class="text-end ml-3 mt-3 mt-md-0">
                                     <button onclick="history.back()" class="btn btn-outline-secondary">
                                         ← 戻る
                                     </button>
                                 </div>
+
                             </div>
                         </div>
                         <p class="font-weight-bold">商品説明</p>
