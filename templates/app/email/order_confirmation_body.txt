@@ -1,6 +1,6 @@
 {% load humanize %} 
-{% if order.user and order.user.username %}
-    {{ order.user.username }}様
+{% if order.user and order.user.last_name %}
+    {{ order.user.full_name }}様
 {% elif order.user and order.user.email %}
     {{ order.user.email }}様
 {% else %}

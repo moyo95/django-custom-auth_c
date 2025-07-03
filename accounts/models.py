@@ -83,3 +83,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    @property
+    def full_name(self):
+        """姓と名を連結してフルネームを返す"""
+        return f"{self.last_name} {self.first_name}"
+    
+    def get_full_name(self):
+        """
+        後方互換性やDjango Adminでの表示のために、
+        get_full_nameメソッドも定義しておくのが一般的。
+        """
+        return self.full_name
