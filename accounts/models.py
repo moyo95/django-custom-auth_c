@@ -95,3 +95,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         get_full_nameメソッドも定義しておくのが一般的。
         """
         return self.full_name
+    
+    def get_short_name(self):
+        """Djangoの規約に合わせたショートネーム取得メソッド"""
+        return self.first_name
