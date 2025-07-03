@@ -13,15 +13,16 @@ class ItemAdmin(admin.ModelAdmin):
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     # インラインでは、詳細な情報を読み取り専用で表示するのが一般的
-    readonly_fields = ('item', 'quantity', 'get_total_item_price')
+    readonly_fields = ('item', 'quantity', 'display_total_price') 
     # 新しいOrderItemをこの画面から追加できないようにする
     can_delete = False 
     max_num = 0 # 追加フォームを非表示にする
 
     # モデルにない情報を表示するためのカスタムメソッド
-    def get_total_item_price(self, obj):
+    def display_total_price(self, obj):
+        # モデルに定義されている get_total_item_price() を呼び出す
         return f"¥{obj.get_total_item_price()}"
-    get_total_item_price.short_description = '小計' # 管理画面での表示名
+    display_total_price.short_description = '小計'
 
 
 # Orderモデルの管理画面をカスタマイズする設定
@@ -31,7 +32,7 @@ class OrderAdmin(admin.ModelAdmin):
         'id', 
         'user_info', # ユーザー情報を分かりやすく表示するカスタムメソッド
         'ordered_date', 
-        'get_total',
+        'display_total_order_price',
         'ordered', # 支払い済みかどうか
     )
     # 支払い状況と注文日で絞り込みできるようにする
@@ -45,10 +46,10 @@ class OrderAdmin(admin.ModelAdmin):
 
     # カスタムメソッドの定義
     def user_info(self, obj):
-        return obj.user.email
+        return obj.user.email if obj.user else 'N/A'
     user_info.short_description = '顧客メールアドレス' # 一覧の列名
 
-    def get_total(self, obj):
+    def display_total_order_price(self, obj):
         return f"¥{obj.get_total()}"
     get_total.short_description = '合計金額' # 一覧の列名
 
