@@ -26,3 +26,31 @@
 商品の発送まで、今しばらくお待ちくださいませ。
 
 今後とも「graha.site」をよろしくお願い申し上げます。
+
+
+
+【デバッグ情報】
+
+--- order.user オブジェクト ---
+{{ order.user }}
+
+--- order.user の全属性 (dir) ---
+{{ order.user|dir }}
+
+--- order.user の辞書 (vars) ---
+{{ order.user|vars }}
+
+--- 直接アクセス ---
+姓 (last_name): '{{ order.user.last_name }}'
+名 (first_name): '{{ order.user.first_name }}'
+
+--- プロパティ呼び出し ---
+full_name プロパティ: '{{ order.user.full_name }}'
+
+--- 手動結合 ---
+手動結合（姓 名）: '{{ order.user.last_name }} {{ order.user.first_name }}'
+手動結合（名 姓）: '{{ order.user.first_name }} {{ order.user.last_name }}'
+
+----------------------------------------
+
+（元のメール本文は一旦コメントアウトするか、この下に残しておく）
