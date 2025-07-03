@@ -159,8 +159,25 @@ STATIC_URL = '/python/static/'
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# 【開発時】にDjangoが直接参照する静的ファイル置き場（あなたの編集用フォルダ）
+# ここは変更しません
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
+# 【本番時】に `collectstatic` で集められるファイルの置き場所
+# ここも変更しません
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+#DEBUGの値に応じて、静的ファイルの配信方法を切り替える
+if DEBUG:
+    # 開発時 (DEBUG=True) は、Djangoの開発サーバーが直接ファイルを見つける
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    # 本番時 (DEBUG=False) は、ファイル名にハッシュを付けてキャッシュ対策をする
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+
 
 # MEDIA_URL = '/media/'
 MEDIA_URL = '/python/media/'
