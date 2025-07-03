@@ -308,9 +308,12 @@ def stripe_webhook(request):
                 order = Order.objects.get(id=order_id, ordered=False)
                 
                 # 1. 注文ステータスを更新する
+                # order.ordered = True
+                # order.save()
+                # print(f"注文ID: {order.id} が支払い済みに更新されました。")
                 order.ordered = True
+                order.ordered_date = timezone.now() # 注文日に現在時刻をセット
                 order.save()
-                print(f"注文ID: {order.id} が支払い済みに更新されました。")
 
                 # 2. ★★★ メール送信を非同期タスクに依頼する ★★★
                 # データベースに保存されたオブジェクトのIDを渡すのが基本
@@ -340,7 +343,7 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 
-    
+
 
 # @csrf_exempt 元
 # def stripe_webhook(request):

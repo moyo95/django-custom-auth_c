@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezon
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -55,7 +56,9 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date =models.DateTimeField()
+
+    ordered_date = models.DateTimeField(null=True, blank=True)
+
     ordered = models.BooleanField(default=False)
     payment = models.ForeignKey('Payment', on_delete=models.SET_NULL, blank=True, null=True)
 
