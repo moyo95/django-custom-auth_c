@@ -170,6 +170,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
+ADMINS = [
+    ('管理者 森田', 'moriyori9@gmail.com'),
+    # 他にも管理者がいれば追加
+    # ('管理者 花子', 'another-admin@example.com'),
+]
+
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else:

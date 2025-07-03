@@ -1,0 +1,33 @@
+以下の新規注文がありました。管理画面から詳細を確認し、発送準備を行ってください。
+
+----------------------------------------
+注文情報
+----------------------------------------
+注文番号: {{ order.id }}
+注文日時: {{ order.ordered_date|date:"Y年m月d日 H:i" }}
+合計金額: ¥{{ order.get_total }}
+
+----------------------------------------
+顧客情報
+----------------------------------------
+氏名: {{ order.user.full_name }} ({{ order.user.last_name_kana }} {{ order.user.first_name_kana }})
+メールアドレス: {{ order.user.email }}
+電話番号: {{ order.user.tel }}
+
+----------------------------------------
+配送先情報
+----------------------------------------
+郵便番号: 〒{{ order.user.postal_code }}
+住所: {{ order.user.address1 }} {{ order.user.address2 }}
+
+----------------------------------------
+注文商品
+----------------------------------------
+{% for item in order.items.all %}
+・{{ item.item.title }} x {{ item.quantity }}  (¥{{ item.get_final_price }})
+{% endfor %}
+
+----------------------------------------
+
+管理画面URL:
+https://graha.site/python/admin/app/order/{{ order.id }}/change/

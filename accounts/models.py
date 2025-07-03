@@ -47,8 +47,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     )
 
     email = models.EmailField('メールアドレス', unique=True)
-    first_name = models.CharField('姓', max_length=30,blank=True)
-    last_name = models.CharField('名', max_length=150,blank=True)
+    first_name = models.CharField('姓', max_length=30,blank=False)
+    last_name = models.CharField('名', max_length=150,blank=False)
     first_name_kana = models.CharField('かな',max_length=30, blank=True)
     last_name_kana = models.CharField('かな',max_length=30, blank=True)
     # address = models.CharField('住所', max_length=30, blank=True)
