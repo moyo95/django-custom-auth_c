@@ -170,13 +170,8 @@ STATICFILES_DIRS = [
 # ここも変更しません
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-#DEBUGの値に応じて、静的ファイルの配信方法を切り替える
-if DEBUG:
-    # 開発時 (DEBUG=True) は、Djangoの開発サーバーが直接ファイルを見つける
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    # 本番時 (DEBUG=False) は、ファイル名にハッシュを付けてキャッシュ対策をする
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 
