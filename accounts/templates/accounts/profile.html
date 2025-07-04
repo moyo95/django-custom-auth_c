@@ -7,42 +7,42 @@
         <h5 class="card-title text-center">プロフィール</h5>
             <table class="profile_table mb-4">
                 <tbody>
-                    <tr>
-                        <th class="header">名前</th>
-                        <td class="data">{{user_data.last_name}} {{user_data.first_name}} </td>
+                    <tr class="d-flex flex-wrap">
+                        <th class="header col-12 col-md-3">名前</th>
+                        <td class="data col-12 col-md-9">{{user_data.last_name}} {{user_data.first_name}} </td>
                     </tr>
                     <tr>
-                        <th class="header">名前（ふりがな）</th>
-                        <td class="data">{{ user_data.first_name_kana }} {{ user_data.last_name_kana }}</td>
+                        <th class="header col-12 col-md-3">名前（ふりがな）</th>
+                        <td class="data col-12 col-md-9">{{ user_data.first_name_kana }} {{ user_data.last_name_kana }}</td>
                     </tr>
                     <!-- <tr>
                         <th class="header">住所</th>
                         <td class="data">{{user_data.address}}</td>
                     </tr> -->
                     <tr>
-                        <th class="header">郵便番号</th>
-                        <td class="data">{{ user_data.postal_code }}</td>
+                        <th class="header col-12 col-md-3">郵便番号</th>
+                        <td class="data col-12 col-md-9">{{ user_data.postal_code }}</td>
                     </tr>
                     <tr>
-                        <th class="header">住所1</th>
-                        <td class="data">{{ user_data.address1 }}</td>
+                        <th class="header col-12 col-md-3">住所1</th>
+                        <td class="data col-12 col-md-9">{{ user_data.address1 }}</td>
                     </tr>
                     <tr>
-                        <th class="header">住所2</th>
-                        <td class="data">{{ user_data.address2 }}</td>
+                        <th class="header col-12 col-md-3">住所2</th>
+                        <td class="data col-12 col-md-9">{{ user_data.address2 }}</td>
                     </tr>
                     
                     <tr>
-                        <th class="header">メールアドレス</th>
-                        <td class="data">{{user_data.email}}</td>
+                        <th class="header col-12 col-md-3">メールアドレス</th>
+                        <td class="data col-12 col-md-9">{{user_data.email}}</td>
                     </tr>
                     <tr>
                         <th class="header">電話番号</th>
-                        <td class="data">{{user_data.tel}}</td>
+                        <td class="data col-12 col-md-9">{{user_data.tel}}</td>
                     </tr>
                     <tr>
-                        <th class="header">入会日</th>
-                        <td class="data">{{user_data.created}}</td>
+                        <th class="header col-12 col-md-3">入会日</th>
+                        <td class="data col-12 col-md-9">{{user_data.created}}</td>
                     </tr>
                 </tbody>
             </table>
