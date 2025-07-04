@@ -201,5 +201,19 @@ input {
 .itemlist:hover::after {
   width: 100%;
   height: 100%;
-  border-color: #007bff; /* アニメーションする枠線の色 (Bootstrapのプライマリカラー) */
+  border-color: #bab9c0;
+  border-radius:.25rem;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: #343a40!important;
+    border-color: #343a40!important;
+}
+
+.page-link {
+    color: #343a40!important;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
 }
