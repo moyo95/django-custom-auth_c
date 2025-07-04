@@ -13,3 +13,4 @@ gunicorn
 django-environ
 celery
 redis
+whitenoise[brotli]
