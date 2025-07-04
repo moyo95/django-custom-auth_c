@@ -74,9 +74,12 @@
   
 {% url 'app:item_list' as item_list_url %}
 {% if request.path == item_list_url %}
-  <div class="hiro d-flex">
-      <img src="{% static 'images/main_vish.jpg' %}" alt="" />
+<div class="container">
+  <div class="hiro d-flex row">
+      <img src="{% static 'images/main_vish.jpg' %}" alt="" class="img-fluid col-md-1" />
   </div>
+</div>
+  
 {% endif %}
 
    <main>
