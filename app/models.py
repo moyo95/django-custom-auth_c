@@ -74,11 +74,12 @@ class Order(models.Model):
 
 class Payment(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-    stripe_change_id = models.CharField(max_length=50)
+    stripe_charge_id = models.CharField(max_length=50)
     amount = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.email
-    
+        if self.user:
+            return self.user.email
+        return f"Payment ID: {self.id}"
 
