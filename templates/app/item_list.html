@@ -4,18 +4,17 @@
 {% load custom_filters %} 
 {% block content %}
 
-<div class="container my-5 py-5">
-    
+<div class="container my-5 py-5">   
     <h2 class="mb-4"><span class="ml-3" style="font-size: 1rem;">ご注意：デモサイトの為、購入することはできません</span></h2>
     <div class="mb-4">
-    <div class="my-5">
-        <a href="{% url 'app:item_list' %}" class="cat_btn mb-2 {% if not request.GET.category %}btn-dark{% else %}btn-secondary{% endif %}">すべて</a>
-        {% for cat in categories %}
-            <a href="?category={{ cat }}" class="cat_btn {% if request.GET.category == cat %}btn-dark{% else %}btn-primary{% endif %}">
-            {{ cat }}
-            </a>
-        {% endfor %}
-    </div>
+      <div class="my-5">
+          <a href="{% url 'app:item_list' %}" class="cat_btn {% if not request.GET.category %}btn-dark{% else %}btn-secondary{% endif %}">すべて</a>
+          {% for cat in categories %}
+              <a href="?category={{ cat }}" class="cat_btn {% if request.GET.category == cat %}btn-dark{% else %}btn-primary{% endif %}">
+              {{ cat }}
+              </a>
+          {% endfor %}
+      </div>
     <div class="row">
         {% for item in item_data %}
         <div class="col-lg-3 col-md-6 mb-4">

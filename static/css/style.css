@@ -26,6 +26,11 @@ main {
     border-radius: 50px;
     background: white;
     color: #333;
+    min-width: 85px;
+    text-align: center;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 .cat_btn:hover {
     border: 1px solid;
@@ -147,4 +152,54 @@ main {
 
 input {
     width: 100%;
+}
+
+
+
+/* static/css/style.css */
+
+/* 商品カードの基本スタイル */
+.itemlist {
+  position: relative; /* 疑似要素を配置するための基準 */
+  border: 1px solid #dee2e6;
+  transition: all 0.3s;
+}
+
+/* 枠線アニメーション用の疑似要素 */
+.itemlist::before,
+.itemlist::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  box-sizing: border-box;
+  transition: all 0.4s ease; /* アニメーションの時間と速度 */
+}
+
+/* 上と左の線 */
+.itemlist::before {
+  top: 0;
+  left: 0;
+  border-top: 2px solid transparent;
+  border-left: 2px solid transparent;
+}
+
+/* 下と右の線 */
+.itemlist::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid transparent;
+  border-right: 2px solid transparent;
+}
+
+/* マウスオーバー時のスタイル */
+.itemlist:hover {
+    border-color: transparent; /* 元の枠線を消す */
+}
+
+.itemlist:hover::before,
+.itemlist:hover::after {
+  width: 100%;
+  height: 100%;
+  border-color: #007bff; /* アニメーションする枠線の色 (Bootstrapのプライマリカラー) */
 }
