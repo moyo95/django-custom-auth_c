@@ -37,8 +37,8 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - staticfiles:/app/staticfiles
-      - media:/app/media
+      - ./staticfiles:/app/staticfiles
+      - ./media:/app/media
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=postgres://my_user:Pass1234@db:5432/my_db?options=-c%20TimeZone%3DUTC
@@ -70,5 +70,5 @@ services:
 
 volumes:
   postgres_data:
-  staticfiles:
+  # staticfiles:
   media:
