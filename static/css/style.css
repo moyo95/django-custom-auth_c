@@ -207,7 +207,7 @@ input {
 
 .page-item.active .page-link {
     z-index: 1;
-    color: #fff;
+    color: #fff!important;
     background-color: #343a40!important;
     border-color: #343a40!important;
 }
