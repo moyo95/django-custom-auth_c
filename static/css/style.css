@@ -46,6 +46,10 @@ main {
     box-shadow: 0 0.2rem 0 rgba(0,0,0,0.1);
 }
 
+.price {
+    margin: 0;
+}
+
 .btn {
     font-size: 90%;
     border-radius: 5rem;
