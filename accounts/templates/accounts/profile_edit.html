@@ -8,49 +8,45 @@
         <h5 class="card-title text-center">プロフィール</h5>
         <form method="post">
             {% csrf_token %}
-            <table class="profile_table mb-4">
-                <tbody>
-                    <tr>
-                        <th class="header">名前</th>
-                        <td class="data form_wrap form_wrap-2">
-                            {% render_field form.last_name class='form-control' placeholder='姓' %}
-                            {% render_field form.first_name class='form-control' placeholder='名' %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="header">ふりがな</th>
-                        <td class="data form_wrap form_wrap-2">
-                            {% render_field form.last_name_kana class='form-control' placeholder='せい' %}
-                            {% render_field form.first_name_kana class='form-control' placeholder='めい' %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="header">郵便番号<span class="header__sab">- 無しで入力して下さい</span></th>
-                        <td class="data">
-                            {% render_field form.postal_code class='form-control' placeholder='例：1234567' %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="header">住所1<span class="header__sab">都道府県・市区町村</span></th>
-                        <td class="data">
-                            {% render_field form.address1 class='form-control' placeholder='例：東京都新宿区' %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="header">住所2<span class="header__sab">番地・建物名・部屋番号</span></th>
-                        <td class="data">
-                            {% render_field form.address2 class='form-control' placeholder='例：1-2-3 メゾン101' %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="header">電話番号</th>
-                        <td class="data">
-                            {% render_field form.tel class='form-control' placeholder='例：09012345678' %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="button max-auto">
+            <div class="form-group">
+                <label>名前</label>
+                <div class="row">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        {% render_field form.last_name class='form-control' placeholder='姓' %}
+                    </div>
+                    <div class="col-md-6">
+                        {% render_field form.first_name class='form-control' placeholder='名' %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>ふりがな</label>
+                <div class="row">
+                    <div class="col-md-6 mb-2 mb-md-0">
+                        {% render_field form.last_name_kana class='form-control' placeholder='せい' %}
+                    </div>
+                    <div class="col-md-6">
+                        {% render_field form.first_name_kana class='form-control' placeholder='めい' %}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.postal_code.id_for_label }}">郵便番号<small class="text-muted"> - ハイフン無しで入力してください</small></label>
+                {% render_field form.postal_code class='form-control' placeholder='例：1234567' %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.address1.id_for_label }}">住所1<small class="text-muted"> - 都道府県・市区町村</small></label>
+                {% render_field form.address1 class='form-control' placeholder='例：東京都新宿区' %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.address2.id_for_label }}">住所2<small class="text-muted"> - 番地・建物名・部屋番号</small></label>
+                {% render_field form.address2 class='form-control' placeholder='例：1-2-3 メゾン101' %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.tel.id_for_label }}">電話番号</label>
+                {% render_field form.tel class='form-control' placeholder='例：09012345678' %}
+            </div>
+            <div class="button max-auto mt-4">
                 <button class="btn btn-lg btn-warning btn-block" type="submit">登録する</button>
             </div>
         </form>
