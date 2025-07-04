@@ -16,6 +16,22 @@ main {
     flex: 1;
 }
 
+.hiro img {
+    width: 100%;
+}
+
+.cat_btn {
+    padding: 5px 10px;
+    border: 1px solid;
+    border-radius: 50px;
+    background: white;
+    color: #333;
+}
+.cat_btn:hover {
+    border: 1px solid;
+    background: #333;
+    color: white;
+}
 .card-profile {
     width: 100%; 
     max-width: 700px;

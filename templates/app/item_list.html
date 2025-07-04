@@ -4,10 +4,6 @@
 {% load custom_filters %} 
 {% block content %}
 
-<!-- <div class="alert alert-danger">
-    <h3>デバッグ情報</h3>
-    <pre>{{ item_data|pprint }}</pre> 
-</div> -->
 <div class="container my-5 py-5">
     
     <h2 class="mb-4"><span class="ml-3" style="font-size: 1rem;">ご注意：デモサイトの為、購入することはできません</span></h2>
@@ -23,7 +19,7 @@
     <div class="row">
         {% for item in item_data %}
         <div class="col-lg-3 col-md-6">
-            <div class="card img-thumbnail itemlist mb-3">
+            <div class="card h-100 img-thumbnail itemlist mb-3">
                 <img src="{{ item.image.url }}" alt="" class="card-img-top card-thum">
                 <div class="card-body text-left w-100">
                     <p class="mb-0 text-secondary border rounded px-2 py-0 small text-center d-inline-flex">{{ item.category }}</p>
@@ -40,19 +36,6 @@
         {% endfor %}
     </div>
 
-  <!-- {# ページの表示 #}
-   {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} ページ<br>
-   {# 前へ #}
-   {% if page_obj.has_previous %}
-   <a href="?page=1">&laquo; 先頭</a>
-   <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
-  {% endif %}
-
- {# 次へ #}
- {% if page_obj.has_next %}
- <a href="?page={{ page_obj.next_page_number }}">次へ</a>
-   <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
-   {% endif %} -->
    {# ページの表示 #}
 <div class="d-flex justify-content-between my-3">
    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }} ページ</span>
@@ -88,7 +71,5 @@
     {% endif %}
   </ul>
 </nav>
-
-
 </div> 
 {% endblock %}
