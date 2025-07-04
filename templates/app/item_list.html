@@ -10,7 +10,7 @@
       <div class="my-5 d-flex flex-wrap">
           <a href="{% url 'app:item_list' %}" class="cat_btn {% if not request.GET.category %}btn-dark{% else %}btn-secondary{% endif %}">すべて</a>
           {% for cat in categories %}
-              <a href="?category={{ cat }}" class="cat_btn {% if request.GET.category == cat %}btn-dark{% else %}btn-primary{% endif %}">
+              <a href="?category={{ cat }}" class="cat_btn {% if request.GET.category == cat %}btn-dark{% else %}btn-primary text-decoration-none{% endif %}">
               {{ cat }}
               </a>
           {% endfor %}

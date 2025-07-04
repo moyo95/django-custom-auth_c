@@ -151,6 +151,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True # これがTrueであることを再確認
 
+FORCE_SCRIPT_NAME = '/python'
 # STATIC_URL = '/static/'
 # 本番環境で静的ファイルが配信されるURLのプレフィックス
 STATIC_URL = '/python/static/'
