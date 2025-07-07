@@ -12,6 +12,10 @@ body {
     font-family: 'Hiragino Kaku Gothic ProN','Hiragino Sans',Meiryo,sans-serif;
 }
 
+#main {
+    display: flex!important;
+    justify-content: space-between;
+}
 main {
     flex: 1;
 }
@@ -48,6 +52,7 @@ main {
 
 .price {
     margin: 0;
+    font-size: 1.4rem;
 }
 
 .btn {
